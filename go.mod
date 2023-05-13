@@ -1,4 +1,4 @@
-module tapok
+module capec
 
 go 1.18
 

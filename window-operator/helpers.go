@@ -13,7 +13,8 @@ var (
 	procBringWindowToTop    = user32.MustFindProc("BringWindowToTop")    //done
 	procSetActiveWindow     = user32.MustFindProc("SetActiveWindow")     //done
 	procSetForegroundWindow = user32.MustFindProc("SetForegroundWindow") //done
-	procGetWindowRect       = user32.MustFindProc("GetWindowRect")
+	procGetWindowRect       = user32.MustFindProc("GetWindowRect")       //done
+	procIsWindow            = user32.MustFindProc("IsWindow")
 )
 
 func GetWindowText(hwnd windows.HWND, maxCount int32) (str string, err error) {
@@ -79,4 +80,9 @@ func GetWindowRect(hwnd windows.HWND) (rect TagRECT, err error) {
 		}
 	}
 	return
+}
+
+func IsWindow(hwnd windows.HWND) (uintptr, uintptr, error) {
+	r0, o, e1 := procIsWindow.Call(uintptr(hwnd))
+	return r0, o, e1
 }

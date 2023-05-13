@@ -1,8 +1,8 @@
 package windowoperator
 
 import (
+	utils "capec/utils"
 	"fmt"
-	utils "tapok/utils"
 	"unsafe"
 
 	"golang.org/x/sys/windows"
@@ -65,4 +65,8 @@ func (wp *WinProcess) GetProcesses() error {
 
 func (wp *WinProcess) TotalLen() int {
 	return len(wp.process)
+}
+
+func (wp *WinProcess) AddProcessedWindow(window WinInfo) {
+	wp.process = append(wp.process, window)
 }
