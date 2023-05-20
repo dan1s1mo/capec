@@ -24,7 +24,7 @@ func main() {
 	err = aw.Init("script.bot", pauseCh, continueCh, &bot)
 
 	fw := mr.FileWorker{}
-	fw.Init("3001")
+	err = fw.Init("3001", "files.json")
 
 	if err != nil {
 		fmt.Println(err)

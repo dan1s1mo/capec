@@ -4,29 +4,50 @@ import (
 	fe "capec/fileeditor"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
 )
+
+type FileMeta struct {
+	Count int32  `json:"count"`
+	Name  string `json:"name"`
+}
 
 type Response struct {
 	Message string `json:"message"`
 }
 
 type FileWorker struct {
-	port string
+	port      string
+	index     int
+	filesMeta []FileMeta
 }
 
-func (fw *FileWorker) Init(port string) {
-	http.HandleFunc("/files-update", handler)
+func (fw *FileWorker) Init(port, files string) error {
+	http.HandleFunc("/files-update", fw.handler)
 	fmt.Printf("Listening on port %s...", port)
 	fw.port = port
+	jsonFile, err := os.Open(files)
+	if err != nil {
+		return err
+	}
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	err = json.Unmarshal(byteValue, &fw.filesMeta)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (fw *FileWorker) Run() {
 	http.ListenAndServe(":"+fw.port, nil)
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fileErr := fe.ModifyFiles(".\\test", 1)
+func (fw *FileWorker) handler(w http.ResponseWriter, r *http.Request) {
+	fw.index = (fw.index + 1) % len(fw.filesMeta)
+	meta := fw.filesMeta[fw.index]
+	fileErr := fe.ModifyFiles(meta.Name, int(meta.Count))
 	if fileErr != nil {
 		http.Error(w, fileErr.Error(), http.StatusInternalServerError)
 		return
