@@ -4,6 +4,8 @@ import (
 	"capec/types"
 	wo "capec/window-operator"
 	"fmt"
+	"math/rand"
+	"time"
 
 	"github.com/go-vgo/robotgo"
 	"github.com/vcaesar/imgo"
@@ -25,6 +27,10 @@ type BotVOne struct {
 func (b *BotVOne) MoveMouseFluent(x int, y int) error {
 	valid := x < b.X && y < b.Y
 	if !valid {
+		rand.Seed(time.Now().UnixNano())
+		x := rand.Intn(b.X)
+		y := rand.Intn(b.Y)
+		robotgo.MoveSmooth(x, y, 0.1, 1.0)
 		return nil
 	}
 	robotgo.MoveSmooth(x, y, 0.1, 1.0)
@@ -40,7 +46,7 @@ func (b *BotVOne) MoveByRelativeBox(textBox *types.Box, windowBox *wo.TagRECT) e
 	x, y := textBox.GetCenter()
 	X := x + int(windowBox.Left)
 	Y := y + int(windowBox.Top)
-	fmt.Printf("move to", X, Y, "\n")
+	fmt.Println("move to", X, Y)
 	b.MoveMouseFluent(X, Y)
 	return nil
 }

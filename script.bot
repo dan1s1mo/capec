@@ -1,14 +1,9 @@
 block:one{
-    move(134,244);
+    move(10000,10000);
 }
 
-block:two{
-    move(1000,1000);
-}
 
 block:main{
     repeat(one,5);
-    repeat(two,2);
-    move(10,9);
-    move(0,1000);
+    move(0,0);
 }

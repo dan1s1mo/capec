@@ -15,6 +15,9 @@ type Engine struct {
 
 func (e *Engine) ExecuteNextCommand() (bool, error) {
 	command, next := e.GetCommand()
+	if !next {
+		return false, nil
+	}
 	if command[0].Tpe == MOVE.typ {
 		X, err := strconv.Atoi(command[1].Text)
 		if err != nil {
@@ -37,9 +40,13 @@ func (e *Engine) ExecuteNextCommand() (bool, error) {
 }
 
 func (e *Engine) GetCommand() (t.Command, bool) {
+	if e.contextStack.IsEmpty() {
+		return nil, false
+	}
 	context, contextFinished, _ := e.contextStack.Pop()
 
 	command := e.blocks[context.BlockName][context.Index]
+
 	if command[0].Tpe == TEXT.typ {
 		blockName := command[0].Text
 		blockLength := len(e.blocks[blockName])
@@ -50,7 +57,7 @@ func (e *Engine) GetCommand() (t.Command, bool) {
 		blockName := command[1].Text
 		blockLength := len(e.blocks[blockName])
 		loopSize, _ := strconv.Atoi(command[2].Text)
-		if e.loopCount != loopSize-1 {
+		if e.loopCount < loopSize-1 {
 			context.Index -= 1
 		}
 		if e.loopCount < loopSize {

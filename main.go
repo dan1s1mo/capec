@@ -8,7 +8,6 @@ import (
 	"syscall"
 
 	mr "capec/myroutines"
-	"time"
 )
 
 func main() {
@@ -19,10 +18,16 @@ func main() {
 
 	ww := mr.WindowWorker{}
 	err := ww.Init(pauseCh, continueCh, &bot)
-
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	aw := mr.AutomationScriptWorker{}
 	err = aw.Init("script.bot", pauseCh, continueCh, &bot)
-
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fw := mr.FileWorker{}
 	err = fw.Init("3001", "files.json")
 
@@ -30,8 +35,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
-	time.Sleep(5 * time.Second)
 
 	go aw.Run()
 	go ww.Run()

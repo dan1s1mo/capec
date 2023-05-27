@@ -1,6 +1,7 @@
 package cronn
 
 import (
+	"capec/utils"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -43,35 +44,13 @@ func writeToFile(fileName string, updatedContent []byte) error {
 	return nil
 }
 
-func randomElement(slice []string) string {
-	return slice[rand.Intn(len(slice))]
-}
-
-func generateRandomFilename(extension string) string {
-	adjectives := []string{
-		"happy", "friendly", "lovely", "graceful", "bold", "mysterious",
-	}
-	nouns := []string{
-		"lion", "eagle", "panda", "dolphin", "fox", "elephant",
-	}
-
-	rand.Seed(time.Now().UnixNano())
-	randomAdjective := randomElement(adjectives)
-	randomNoun := randomElement(nouns)
-	randomNumber := rand.Intn(1000)
-
-	filename := fmt.Sprintf("%s_%s_%03d%s", randomAdjective, randomNoun, randomNumber, extension)
-	return filename
-}
-
 func deleteAndRecreateFile(filename string) error {
 	content, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return err
 	}
 
-	newFilename := generateRandomFilename(filepath.Ext(filename))
-	newFilePath := filepath.Join(filepath.Dir(filename), newFilename)
+	newFilePath := utils.GetRandomFilename(filename)
 
 	err = os.Remove(filename)
 	if err != nil {
