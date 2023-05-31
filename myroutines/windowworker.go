@@ -38,25 +38,46 @@ func (ww *WindowWorker) Run() {
 			continue
 		}
 		for _, winInfo := range newWindows {
+			ww.pauseCh <- true
 			wo.SetForegroundWindow(winInfo.Hwnd)
 			wo.SetActiveWindow(winInfo.Hwnd)
 			wo.BringWindowToTop(winInfo.Hwnd)
 			fmt.Println(winInfo.Name, winInfo.Rect)
-			//newFileName := utils.GetRandomFilename("..\\test1.png")
-			time.Sleep(time.Second * 2)
-			ww.bot.TakeScreenshot("..\\test1.png", &winInfo.Rect)
-			response := hip.ProcessImage("..\\test1.png")
-			fmt.Println(response)
-			ww.pauseCh <- true
 			windowClosed := false
-			for _, box := range response {
-				ww.bot.MoveByRelativeBox(&box, &winInfo.Rect)
+			childWindows := wo.WinProcess{}
+			childWindows.GetChildWindows(winInfo.Hwnd)
+
+			for _, btn := range childWindows.Process() {
+				fmt.Println(btn.Rect.Right-btn.Rect.Left, btn.Rect.Bottom-btn.Rect.Top)
+				x := int(btn.Rect.Right+btn.Rect.Left) / 2
+				y := int(btn.Rect.Bottom+btn.Rect.Top) / 2
+				ww.bot.MoveMouseFluent(x, y)
 				ww.bot.ClickNTimes(1)
 				status, _, _ := wo.IsWindow(winInfo.Hwnd)
 				if status == 1 {
+					time.Sleep(time.Millisecond * 500)
 					ww.initialWindowProc.AddProcessedWindow(winInfo)
 					windowClosed = true
 					break
+				}
+			}
+
+			if !windowClosed {
+				time.Sleep(time.Second * 2)
+				ww.bot.TakeScreenshot("..\\test1.png", &winInfo.Rect)
+				response := hip.ProcessImage("..\\test1.png")
+				fmt.Println(response)
+				ww.pauseCh <- true
+
+				for _, box := range response {
+					ww.bot.MoveByRelativeBox(&box, &winInfo.Rect)
+					ww.bot.ClickNTimes(1)
+					status, _, _ := wo.IsWindow(winInfo.Hwnd)
+					if status == 1 {
+						ww.initialWindowProc.AddProcessedWindow(winInfo)
+						windowClosed = true
+						break
+					}
 				}
 			}
 			if !windowClosed {

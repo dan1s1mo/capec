@@ -40,9 +40,10 @@ func (aw *AutomationScriptWorker) Run() {
 		default:
 			if !paused {
 				next, _ := aw.engine.ExecuteNextCommand()
-				time.Sleep(3 * time.Second)
+				time.Sleep(1 * time.Second)
 				if !next {
-					time.Sleep(3 * time.Second) // Only in development
+					fmt.Println("stoped")
+					time.Sleep(1 * time.Second) // Only in development
 					aw.engine.Reset()
 				}
 			}

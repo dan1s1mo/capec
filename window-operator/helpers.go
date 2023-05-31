@@ -14,12 +14,30 @@ var (
 	procSetActiveWindow     = user32.MustFindProc("SetActiveWindow")     //done
 	procSetForegroundWindow = user32.MustFindProc("SetForegroundWindow") //done
 	procGetWindowRect       = user32.MustFindProc("GetWindowRect")       //done
+	procGetClassNameW       = user32.MustFindProc("GetClassNameW")
+	procEnumChildWindows    = user32.MustFindProc("EnumChildWindows")
 	procIsWindow            = user32.MustFindProc("IsWindow")
 )
 
 func GetWindowText(hwnd windows.HWND, maxCount int32) (str string, err error) {
 	b := make([]uint16, maxCount)
 	r0, _, e1 := procGetWindowTextW.Call(uintptr(hwnd), uintptr(unsafe.Pointer(&b[0])), uintptr(maxCount))
+	len := int32(r0)
+	if len == 0 {
+		if e1 != nil {
+			err = e1
+		} else {
+			err = syscall.EINVAL
+		}
+		return
+	}
+	str = syscall.UTF16ToString(b)
+	return
+}
+
+func GetClassName(hwnd windows.HWND, maxCount int32) (str string, err error) {
+	b := make([]uint16, maxCount)
+	r0, _, e1 := procGetClassNameW.Call(uintptr(hwnd), uintptr(unsafe.Pointer(&b[0])), uintptr(maxCount))
 	len := int32(r0)
 	if len == 0 {
 		if e1 != nil {

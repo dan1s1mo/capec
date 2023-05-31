@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+	fmt.Println("2111111111111111")
 	bot := bot.CreateBot()
 
 	pauseCh := make(chan bool)
@@ -38,7 +39,7 @@ func main() {
 
 	go aw.Run()
 	go ww.Run()
-	go fw.Run()
+	//go fw.Run()
 
 	exit := make(chan os.Signal)
 	signal.Notify(exit, syscall.SIGINT, syscall.SIGTERM)

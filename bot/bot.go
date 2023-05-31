@@ -70,7 +70,9 @@ func (b *BotVOne) TakeScreenshot(path string, Rect *wo.TagRECT) error {
 }
 
 func (b *BotVOne) ClickNTimes(n int) error {
+	fmt.Println("CLick", n)
 	for i := 0; i < n; i++ {
+		fmt.Println("CLick")
 		robotgo.Click()
 	}
 	return nil
