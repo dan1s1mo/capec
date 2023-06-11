@@ -32,6 +32,7 @@ func (ww *WindowWorker) Run() {
 	currentWindowProc := wo.WinProcess{}
 	hip := ip.HTTPImageProcesse{}
 	for {
+		time.Sleep(time.Second * 5)
 		currentWindowProc.GetProcesses()
 		newWindows := ww.initialWindowProc.GetNew(&currentWindowProc)
 		if len(newWindows) == 0 {
@@ -54,7 +55,7 @@ func (ww *WindowWorker) Run() {
 				ww.bot.MoveMouseFluent(x, y)
 				ww.bot.ClickNTimes(1)
 				status, _, _ := wo.IsWindow(winInfo.Hwnd)
-				if status == 1 {
+				if status == 0 {
 					time.Sleep(time.Millisecond * 500)
 					ww.initialWindowProc.AddProcessedWindow(winInfo)
 					windowClosed = true
@@ -73,7 +74,7 @@ func (ww *WindowWorker) Run() {
 					ww.bot.MoveByRelativeBox(&box, &winInfo.Rect)
 					ww.bot.ClickNTimes(1)
 					status, _, _ := wo.IsWindow(winInfo.Hwnd)
-					if status == 1 {
+					if status == 0 {
 						ww.initialWindowProc.AddProcessedWindow(winInfo)
 						windowClosed = true
 						break
@@ -88,10 +89,9 @@ func (ww *WindowWorker) Run() {
 				ww.bot.ClickNTimes(1)
 				ww.bot.Scroll()
 				status, _, _ := wo.IsWindow(winInfo.Hwnd)
-				if status == 1 {
+				if status == 0 {
 					ww.initialWindowProc.AddProcessedWindow(winInfo)
-					windowClosed = true
-					break
+
 				}
 			}
 			ww.continueCh <- true

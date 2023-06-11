@@ -1,12 +1,8 @@
-block:one{
-    click(1);
-    move(10000,10000);
-    click(2);
-}
 
 
-block:main{
-    repeat(one,2);
+
+block:main{ 
     move(10000,10000);
     click(1);
+    move(10000,10000);
 }

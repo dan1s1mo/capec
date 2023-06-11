@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Page</title>
+    <style>
+        .padded {
+            margin: 20px;
+            padding: 10px;
+        }
+        .green-button {
+            background-color: green;
+            color: white;
+            font-size: 20px; /* Larger text */
+            padding: 20px 40px; /* Bigger button */
+        }
+    </style>
+    <script type="text/javascript">
+        let a = 0
+        function showAlert() {
+            a ++; 
+            if (a == 3) {
+                alert("You clicked an element!");
+                a = 0;
+            }
+            
+        }
+    </script>
+</head>
+<body>
+    <a href="#" class="padded" onclick="showAlert()">You win</a>
+    <br/>
+    <button class="green-button padded " onclick="showAlert()">Get it now</button>
+    <br/>
+    <img src="Screenshot_1.jpg" class="padded" onclick="showAlert()" alt="clickable image" style="width:100px;height:100px;">
+</body>
+</html>

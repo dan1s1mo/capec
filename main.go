@@ -11,7 +11,6 @@ import (
 )
 
 func main() {
-	fmt.Println("2111111111111111")
 	bot := bot.CreateBot()
 
 	pauseCh := make(chan bool)
